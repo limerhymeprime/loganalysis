@@ -1,0 +1,411 @@
+import glob
+import re
+import os
+import openpyxl
+from openpyxl.styles import PatternFill
+
+wb = openpyxl.Workbook()
+sheet = wb.active
+sheet.freeze_panes = 'A2'
+
+
+b_color = PatternFill(start_color='99ccff',end_color='99ccff',fill_type='solid')
+y_color = PatternFill(start_color='ffffcc',end_color='ffffcc',fill_type='solid')
+r_color = PatternFill(start_color='ff9999',end_color='ff9999',fill_type='solid')
+g_color = PatternFill(start_color='00cc00',end_color='00cc00',fill_type='solid')
+gray_color = PatternFill(start_color='b3b3cc',end_color='b3b3cc',fill_type='solid')
+
+sheet.cell(row=1, column =15).value = 'Location'
+sheet.cell(row=1, column =15).fill = gray_color
+sheet.cell(row=1, column =1).value = 'Hostname'
+sheet.cell(row=1, column =1).fill = g_color
+sheet.cell(row=1, column =2).value = 'Model number'
+sheet.cell(row=1, column =2).fill = g_color
+sheet.cell(row=1, column =3).value = 'Serial Number'
+sheet.cell(row=1, column =3).fill = g_color
+sheet.cell(row=1, column =4).value = 'Version'
+sheet.cell(row=1, column =4).fill = g_color
+sheet.cell(row=1, column =5).value = 'FAN PS-1'
+sheet.cell(row=1, column =5).fill = y_color
+sheet.cell(row=1, column =6).value = 'FAN PS-2'
+sheet.cell(row=1, column =6).fill = y_color
+sheet.cell(row=1, column =7).value = 'System Temp'
+sheet.cell(row=1, column =7).fill = g_color
+sheet.cell(row=1, column =8).value = 'Power ( A'
+sheet.cell(row=1, column =8).fill = b_color
+sheet.cell(row=1, column =9).value = 'B )'
+sheet.cell(row=1, column =9).fill = b_color
+sheet.cell(row=1, column =10).value = 'Power ( 1A'
+sheet.cell(row=1, column =10).fill = b_color
+sheet.cell(row=1, column =11).value = '1B'
+sheet.cell(row=1, column =11).fill = b_color
+sheet.cell(row=1, column =12).value = '2A'
+sheet.cell(row=1, column =12).fill = b_color
+sheet.cell(row=1, column =13).value = '2B )'
+sheet.cell(row=1, column =13).fill = b_color
+sheet.cell(row=1, column =14).value = 'UPtime'
+sheet.cell(row=1, column =14).fill = r_color
+
+sheet.column_dimensions['A'].width = 33
+sheet.column_dimensions['B'].width = 20
+sheet.column_dimensions['C'].width = 15
+sheet.column_dimensions['D'].width = 11
+sheet.column_dimensions['E'].width = 9
+sheet.column_dimensions['F'].width = 9
+sheet.column_dimensions['G'].width = 12
+sheet.column_dimensions['H'].width = 14
+sheet.column_dimensions['I'].width = 14
+sheet.column_dimensions['J'].width = 18
+sheet.column_dimensions['K'].width = 18
+sheet.column_dimensions['L'].width = 18
+sheet.column_dimensions['M'].width = 18
+sheet.column_dimensions['N'].width = 17
+sheet.column_dimensions['O'].width = 75
+
+
+
+
+s1 = str('hostname')
+p1 = re.compile(s1)
+s1_2 = str('uptime')
+p1_2 = re.compile(s1_2)
+
+s2 = str('Model number')
+p2 = re.compile(s2)
+s2_1 = str('Model Number')
+p2_1 = re.compile(s2_1)
+
+s3 = str('System serial number')
+p3 = re.compile(s3)
+s3_1 = str('System Serial Number')
+p3_1 = re.compile(s3_1)
+
+
+s4 = str('version')
+p4 = re.compile(s4)
+s4_1 = str('Version')
+p4_1 = re.compile(s4_1)
+
+
+s5_1 = str('FAN PS-1')
+p5_1 = re.compile(s5_1)
+s5_1_1 = str('FAN is')
+p5_1_1 = re.compile(s5_1_1)
+s5_2 = str('FAN PS-2')
+p5_2 = re.compile(s5_2)
+
+s6 = str('SYSTEM TEMPERATUR')
+p6 = re.compile(s6)
+s6_1 = str('TEMPERATUR')
+p6_1 = re.compile(s6_1)
+s6_2 = str('temperature')
+p6_2 = re.compile(s6_2)
+s6_3 = str('Temperature State')
+p6_3 = re.compile(s6_3)
+
+
+
+
+s7_1 = str('POWER SUPPLY A')
+p7_1 = re.compile(s7_1)
+s7_2 = str('POWER SUPPLY B')
+p7_2 = re.compile(s7_2)
+
+s8_1 = str('1A  PWR')
+p8_1 = re.compile(s8_1)
+s8_2 = str('1B  PWR')
+p8_2 = re.compile(s8_2)
+s8_3 = str('2A  PWR')
+p8_3 = re.compile(s8_3)
+s8_4 = str('2B  PWR')
+p8_4 = re.compile(s8_4)
+
+s9 = str('uptime')
+p9 = re.compile(s9)
+
+
+
+
+n=1 #수직
+m=1 #수평
+
+
+
+
+
+
+for i in glob.glob(r'c:\search\*.*'):
+    try :
+        with open(i, 'r', encoding='CP949') as f:
+       
+
+            print('--------%s--------' %i)
+            m=1
+            n=n+1
+            oper1 = True
+            oper2 = True
+            oper3 = True
+            oper4 = True
+            oper5_1 = True
+            oper5_2 = True
+            oper6 = True
+
+            sheet.cell(row=n, column=15).value = i
+            
+            for x, y in enumerate(f.readlines(),1):
+                   
+    #hostname
+                
+                m1 = p1.findall(y)
+                if m1 and oper1 is True:
+                    
+                    m=1
+                    item = y.split(" ")
+                    hostname = item[y.index("hostname")+1]
+                    sheet.cell(row=n, column = m).value = hostname
+                    # print(hostname  , end='')
+                    oper1 = False
+
+    #hostname 2 / uptime
+                m1_2 = p1_2.findall(y)
+                if m1_2 and oper1 is True:
+                    if 'ntp' not in y and 'Switch' not in y and 'Available' not in y:
+                        m=1
+                        item = y.split(" ")                
+                        sheet.cell(row=n, column =m).value = item[0]
+                        # print('%s' %y , end='')
+                        oper1 = False
+
+    #Model number
+                m2 = p2.findall(y)       
+                if m2 and oper2 is True :
+                    
+                    m=2
+                    item = y.split(" ")
+                    
+                    Modelnumber = item[22]                
+                    sheet.cell(row=n, column =m).value = Modelnumber
+                    # print('%s' %y , end='')
+                    oper2 = False
+
+    #Model number 2
+                m2_1 = p2_1.findall(y)       
+                if m2_1 and oper2 is True :
+                    
+                    m=2
+                    item = y.split(" ")
+                    
+                    Modelnumber = item[25]                
+                    sheet.cell(row=n, column =m).value = Modelnumber
+                    # print('%s' %y , end='')
+                    oper2 = False                
+
+                
+    #Serial
+                m3 = p3.findall(y)
+                if m3 and oper3 is True:
+                    m=3
+                    item = y.split(" ")
+                    serial = item[y.index("number")+1]                
+                    sheet.cell(row=n, column =m).value = serial
+                    # print('%s' %y , end='')
+                    oper3 = False 
+
+    #Serial 2
+                m3_1 = p3_1.findall(y)
+                if m3_1 and oper3 is True:
+                    m=3
+                    item = y.split(" ")
+                    
+                    serial = item[18]                
+                    sheet.cell(row=n, column =m).value = serial
+                    # print('%s' %y , end='')
+                    oper3 = False 
+
+
+
+
+    #version
+                m4 = p4.findall(y)
+                if m4 and oper4 is True:
+                    if 'precision' not in y and 'authentication' not in y and 'show' not in y and 'VTP' not in y and 'cesium' not in y and 'advanced' not in y and 'FPGA' not in y and 'board' not in y and oper4 is True:
+                        m=4
+                        sheet.cell(row=n, column =m).value = y
+                        # print('%s' %y , end='')
+                        oper4 = False 
+
+    #version 2 / Version
+                m4_1 = p4_1.findall(y)
+                if m4_1:
+                    if 'FPGA' not in y and 'SW' not in y and oper4 is True:
+                        m=4
+                        sheet.cell(row=n, column =m).value = y
+                        # print('%s' %y , end='')
+                        
+
+    #FAN1
+                m5_1 = p5_1.findall(y)
+                if m5_1 and oper5_1 is True:
+                    m=5
+                    item = y.split(" ")
+                    
+                    sheet.cell(row=n, column =m).value = item[3]
+                    # print('%s' %y , end='')
+                    oper5_1 = False
+
+    #FAN1_1
+                m5_1_1 = p5_1_1.findall(y)
+                if m5_1_1 :
+                    m=5
+                    item = y.split(" ")
+                    
+                    sheet.cell(row=n, column =m).value = item[2]
+                    # print('%s' %y , end='')
+                    
+
+
+    #FAN2           
+                m5_2 = p5_2.findall(y)
+                if m5_2 and oper5_2 is True:
+                    m=6
+                    item = y.split(" ")
+                    
+                    sheet.cell(row=n, column =m).value = item[3]
+                    # print('%s' %y , end='')
+                    oper5_2 = False
+
+    #SYSTEM TEMPERRATURE                            
+                m6 = p6.findall(y)
+                if m6 and oper6 is True:
+                    m=7
+                    item = y.split(" ")
+                    
+                    sheet.cell(row=n, column =m).value = item[item.index("is")+1]
+                    
+                    # print('%s' %y , end='')
+                    oper6 = False
+
+    #SYSTEM TEMPERRATURE 2                           
+                m6_1 = p6_1.findall(y)
+                if m6_1 and oper6 is True:
+                    m=7
+                    item = y.split(" ")
+                    
+                    sheet.cell(row=n, column =m).value = item[item.index("is")+1]
+                    
+                    # print('%s' %y , end='')
+                    oper6 = False
+
+    #SYSTEM TEMPERRATURE 3                           
+                m6_2 = p6_2.findall(y)
+                if m6_2 and oper6 is True:
+                    m=7
+                    
+                    
+                    sheet.cell(row=n, column =m).value = y
+                    
+                    # print('%s' %y , end='')
+                    oper6 = False
+
+    #SYSTEM TEMPERRATURE 4                           
+                m6_3 = p6_3.findall(y)
+                if m6_3 and oper6 is True:
+                    m=7
+                    item = y.split(" ")
+                    
+                    sheet.cell(row=n, column =m).value = item[2]                    
+                                       
+                    # print('%s' %y , end='')
+                    oper6 = False
+
+
+
+
+
+    #POWER A
+                m7_1 = p7_1.findall(y)
+                if m7_1:
+                    if 'PID' not in y :
+                        m=8
+
+                        item = y.split(" ")
+                    
+                        power = ' '.join(item[4:6])
+                        sheet.cell(row=n, column =m).value = power
+                        
+                        # print('%s' %y , end='')  
+                                                    
+    #POWER B
+
+                m7_2 = p7_2.findall(y)
+                if m7_2:
+                    if 'PID' not in y :
+                        m=9
+                        item = y.split(" ")
+                        
+                        power = ' '.join(item[4:6])
+                        sheet.cell(row=n, column =m).value = power
+                        # print('%s' %y , end='')  
+
+    #1A PWR
+                m8_1 = p8_1.findall(y)
+                if m8_1:
+                    m=10
+                    item = y.split(" ")
+                    
+                    pwr = ' '.join(item[10:26])
+                    sheet.cell(row=n, column =m).value = pwr
+                    # print('%s' %y , end='')
+    #1B PWR
+                m8_2 = p8_2.findall(y)
+                if m8_2:
+                    m=11
+                    item = y.split(" ")
+                    
+                    pwr = ' '.join(item[10:26])
+                    sheet.cell(row=n, column =m).value = pwr
+                    # print('%s' %y , end='')
+    #2A PWR
+                m8_3 = p8_3.findall(y)
+                if m8_3:
+                    m=12
+                    item = y.split(" ")
+                    
+                    pwr = ' '.join(item[10:26])
+                    sheet.cell(row=n, column =m).value = pwr
+                    # print('%s' %y , end='')                                
+    #2B PWR
+                m8_4 = p8_4.findall(y)
+                if m8_4:
+                    m=13
+                    item = y.split(" ")
+                    
+                    pwr = ' '.join(item[10:26])
+                    sheet.cell(row=n, column =m).value = pwr
+                    # print('%s' %y , end='')
+
+
+                m9 = p9.findall(y)
+                if m9:
+                    if 'ntp' not in y and 'Switch' not in y and 'Available' not in y:
+                        m=14
+                        item = y.split(" ") 
+                        
+                        uptime = ' '.join(item[3:7])
+                                        
+                        sheet.cell(row=n, column =m).value = uptime
+                        # print('%s' %y , end='')
+
+    
+        
+             
+                
+                
+        wb.save('basic.xlsx')
+        
+    except:    
+        pass
+
+
+
+os.system('pause') 
